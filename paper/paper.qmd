@@ -1,10 +1,8 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Tax-Equity-in-Low-and-Middle-Income-Countries-Replication"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Amie Liu, Wanling Ma
+thanks: "Code and data are available at: https://github.com/WanlingMa/Tax-Equity-in-Low-and-Middle-Income-Countries-Replication"
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -30,113 +28,82 @@ You can and should cross-reference sections and sub-sections. We use @citeR and 
 The remainder of this paper is structured as follows. @sec-data....
 
 
-
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+## Source
 
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
+The original paper, "Tax Equity in Low- and Middle-Income Countries," utilized for replication, was published in the American Economic Association journal in 2024 [@article]. It explores the role of taxation in mitigating income inequality within countries with lower and middle incomes [@article]. This paper seeks to build upon the findings of the original paper, using the same datasets that were last retrieved on February 10th, 2024. 
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
+The two main research questions that were explored in this paper: TODO
 
-Talk more about it.
+## Methodology
 
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+This paper used the R programming language [@citeR] and the 'tidyverse' [@citeTidyverse] packages for replication, reproduction, data cleaning, and analysis. Within the 'tidyverse' package [@citeTidyverse], we used 'readr' [@citeReadr], 'dplyr' [@citeDplyr], 'tidyr' [@citeTidyr], and 'ggplot2' [@citeGgplot2] for reading CSV files, manipulating data, tidying data, and creating graphs.
 
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
+Data collection methods exhibit significant diversity among open sources. We conducted a data-cleaning procedure for reproduction, focusing on variable selection, simplifying variable names, and removing missing values. The variables selected from the original paper were chosen based on their relevance to our research question, relating to (TODO). 
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+This paper analyzes the datasets listed below, which we have organized into three categories: Economic Development and Growth, Labor Market and Employment, and Taxation and Income Distribution.
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
+### Economic Development and Growth
 
-Talk way more about it. 
+`data/gdp_populaPon_WDI.dta`
+
+The dataset was obtained from the World Bank’s World Development Indicators @worldDevelopmentIndicators. It encompasses a comprehensive sample from 266 countries and spans from the year 1960 to 2020 [@worldDevelopmentIndicators]. Three key variables available within the database are GDP in 2010 USD (gdp_2010usd), GDP in current USD (gdp_currentusd), and Population (pop). GDP per capita (USD) is calculated as the ratio of gdp_2010usd to population, providing a measure of economic output per person adjusted for inflation [@worldDevelopmentIndicators]. Meanwhile, GDP per capita (current) is calculated by dividing gdp_currentusd by population, offering a snapshot of economic output per person in current currency values [@worldDevelopmentIndicators]. This enables researchers to analyze economic growth, trends, and developments over an extensive time across diverse geographical regions.
+
+`data/ross_mahdavi.dta`
+
+The dataset was obtained from the Harvard Dataverse @oilGasData. It encompasses information about oil and natural gas production of all countries from 1932 to 2014 [@oilGasData]. It contains six column variables, including the country ID (country), year, approximate value of oil and gas product in US dollars (natres_richesse), GDP worldwide (gdp_wid), GDP in constant 2014 US dollars (gdp_2014usd), and oil and gas product as percentage of GDP (oil_pct) [@oilGasData]. Covering the period from 1932 to 2014, this dataset provides a longitudinal perspective on oil and natural gas production trends with a global scope, providing valuable insights into the economic aspects of oil and natural gas production.
+
+`data/globalETR_bfjz.dta`
+
+The dataset was sourced from the paper titled “Globalization and Factor Income Taxation” [@incomeTaxation] and is accessible through the website associated with the paper [@incomeTaxationWebsite]. It provides data on economic indicators and taxation in each country from 1965 to 2018, including the net domestic product in constant 2019 US dollars, effective tax rate, tax revenue, total income tax, social contributions, property and wealth tax, and indirect tax [@incomeTaxationWebsite]. This allows the authors to comparatively analyze the effective tax rate and taxation policies that influence income distribution globally. 
+
+`data/country_frame.dta`
+
+The dataset was obtained from the World Bank’s World Development Indicators @incomeClassification. It includes several columns containing key indicators related to economic, social, and environmental development. These columns cover variables such as country codes represented by both two-letter (iso2) and three-letter (iso3), country names (country_name), region names (regionname), and income level classifications (incomelevelname) [@incomeClassification]. The income level classification consists of five distinct variables: high income, low income, upper middle income, lower middle income, and unclassified [@incomeClassification]. These variables provide insights into the economic, social, and environmental characteristics of countries worldwide.
 
 
+### Labor Market and Employment
 
-# Model
+`data/API_SL.EMP.SELF.ZS_DS2_en_csv_v2_5560396.csv`
 
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+The dataset was sourced from the International Labour Organization @selfEmployedWorkforce and contains information from 1960 to 2022. It includes essential variables such as country code, country name, indicator name, indicator code, and the percentage of total employment each year [@selfEmployedWorkforce]. By focusing on self-employment as a specific indicator type, the dataset enables the analysis of the proportion of self-employed people among the total workforce across different countries and over time.
 
 
-### Model justification
+### Taxation and Income Distribution
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+`data/regressions_output_central.dta`
+`data/Country_informaPon.xlsx`
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+These regression datasets were obtained from the authors’ article “Informality, Consumption Taxes, and Redistribution” @informalConsumption. The column variables include a unique identifier for each country (country_code), the year in which the data was collected (year), the number of iterations performed during the regression analysis (iteration), regression coefficient (b), standard error of the regression coefficient (se), and the coefficient of determination (r2_adj) [@informalConsumption]. These were conducted for the regression analysis of informal shares in household consumption data. 
+
+
+`data/PIT_parameters_AJ.dta`
+
+The dataset originates from Jensen’s journal article “Employment Structure and the Rise of the Modern Tax System” @PITThresholds. It consists of data spanning from the year 1870 to 2014 and covers 100 countries. It includes several column variables, such as country code value (country_code), country name, year, mean of GDP per capita (lg_gdppc), mean of the marginal income tax rate (mtr), and mean of the size of personal income tax (size_pit) [@PITThresholds]. These variables delve into the relationship between country-level exemption threshold, tax system evolution, and economic development across different countries and times. 
+
+
+`data/PIT_Top_Rates_2022.csv`
+
+The dataset was collected and coded by the authors in 2023, providing information on the country-level top marginal tax rate of personal income tax for the year 2022 across various countries [@article]. This dataset provides insights into the taxation policies and structures related to personal income tax rates implemented by different countries in the specified year.
+
+`data/PSPR_incidence_dirtax_2023.dta`
+
+The dataset utilized in the World Bank Poverty and Shared Prosperity report Chapter 5 "Correcting Course" @directTaxation is sourced from the Commitment for Equity Institute and the World Bank. It was shared by the World Bank in response to the authors' request [@directTaxation]. The dataset encompasses various variables, including country and year of the CEQ project (ctry_year), country of the CEQ project (ctry_ceq), year of the CEQ project (year), the incidence of direct taxes across income deciles (in_pdi_dirtax), World Economic Outlook group classification (class_weo), and others [@directTaxation]. These variables show poverty, inequality, and shared prosperity metrics, enabling detailed analyses of economic and equity-related indicators across different countries and periods.
+
 
 
 # Results
 
-Our results are summarized in @tbl-modelresults.
-
+## Figure 1
 ```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+source("../scripts/99-replications-figure1.R")
 ```
 
+## Figure 2
 ```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
+source("../scripts/100-replications-figure2.R")
 ```
-
-
-
 
 # Discussion
 
@@ -151,65 +118,6 @@ If my paper were 10 pages, then should be be at least 2.5 pages. The discussion 
 ## Weaknesses and next steps
 
 Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
 
 
 

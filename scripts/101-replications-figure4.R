@@ -167,7 +167,6 @@ count(complete_sample_data, !is.na(top_rate))
 count(complete_sample_data, !is.na(size_pit))
 
 # Generate income_groups based on incomelevelname
-# Generate income_groups based on incomelevelname
 complete_sample_data$income_groups <- case_when(
   complete_sample_data$incomelevelname == "Low income" ~ 1,
   complete_sample_data$incomelevelname == "Lower middle income" ~ 2,

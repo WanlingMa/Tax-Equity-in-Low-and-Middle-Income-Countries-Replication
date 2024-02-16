@@ -46,7 +46,7 @@ clean_columns_conflict <- function(result_df) {
 }
 
 # Bring in Population and GDP, World Development Indicators World Bank
-gdp_population_WDI <- read_dta("replication_package/Replication/data/gdp_population_WDI.dta") %>%
+gdp_population_WDI <- read_dta("../replication_package/Replication/data/gdp_population_WDI.dta") %>%
   filter(year == 2018) %>%
   select(-year)
 
@@ -55,7 +55,7 @@ tempfile_pop <- tempfile(fileext = ".dta")
 write_dta(gdp_population_WDI, path = tempfile_pop)
 
 # Import self-employment data
-self_employment_data <- read_csv("replication_package/Replication/data/API_SL.EMP.SELF.ZS_DS2_en_csv_v2_5560396.csv", skip = 3) %>%
+self_employment_data <- read_csv("../replication_package/Replication/data/API_SL.EMP.SELF.ZS_DS2_en_csv_v2_5560396.csv", skip = 3) %>%
   rename(countryname = "Country Name", country = "Country Code", v62 = "2018") %>%
   select(countryname, country, v62) %>%
   rename(self_employed_share = v62)
@@ -71,7 +71,7 @@ nrow(merged_data)
 # This is akin to the comments in the Stata code about aligning samples
 
 # Merge with Tax sample to have comparable countries
-tax_sample <- read_dta("replication_package/Replication/proc/tax_sample.dta")
+tax_sample <- read_dta("../replication_package/Replication/proc/tax_sample.dta")
 
 final_sample <- merged_data %>%
   inner_join(tax_sample, by = "country") %>%
@@ -80,7 +80,7 @@ final_sample <- clean_columns_conflict(final_sample)
 
 final_sample
 # Save the final dataset
-write_dta(final_sample, "replication_package/Replication/proc/tax_employment_sample.dta")
+write_dta(final_sample, "../replication_package/Replication/proc/tax_employment_sample.dta")
 
 #### Draw Figure 2.1 ####
 
@@ -117,7 +117,7 @@ print(plot)
 
 # Obtain GDP_pc for the country
 # Read Excel file
-gdp_data <- read_excel("replication_package/Replication/data/Country_information.xlsx")
+gdp_data <- read_excel("../replication_package/Replication/data/Country_information.xlsx")
 
 # Rename columns
 gdp_data <- gdp_data %>%
@@ -129,17 +129,17 @@ gdp_data <- gdp_data %>%
   select(CountryName, country_code, GDP_pc_currentUS, GDP_pc_constantUS2010, PPP_current, year)
 
 # Save the temporary data as a Stata file
-write_dta(gdp_data, "replication_package/Replication/proc/gdp_data.dta")
+write_dta(gdp_data, "../replication_package/Replication/proc/gdp_data.dta")
 
 # Load country frame data
-country_frame <- read_dta("replication_package/Replication/data/country_frame.dta") %>%
+country_frame <- read_dta("../replication_package/Replication/data/country_frame.dta") %>%
   rename(country_code = iso2)
 
 # Save the temporary data as a Stata file (if needed for later use)
-write_dta(country_frame, "replication_package/Replication/proc/country_frame.dta")
+write_dta(country_frame, "../replication_package/Replication/proc/country_frame.dta")
 
 # Load Data of regression Output
-regression_output <- read_dta("replication_package/Replication/data/regressions_output_central.dta")
+regression_output <- read_dta("../replication_package/Replication/data/regressions_output_central.dta")
 
 # Merge gdp_data with regression_output
 merged_data <- merge(regression_output, gdp_data, by = c("country_code", "year"), all.x = TRUE)

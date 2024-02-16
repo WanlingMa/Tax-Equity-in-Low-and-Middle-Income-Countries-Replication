@@ -12,22 +12,23 @@ library(tidyverse)
 library(haven) # for reading .dta files
 library(dplyr) # for data manipulation
 library(ggplot2)
+library(patchwork)
 
 #### Pre-process data ####
 
 # Bring in Population and GDP, World Development Indicators World Bank
-pop <- read_dta("replication_package/Replication/data/gdp_population_WDI.dta") %>%
+pop <- read_dta("../replication_package/Replication/data/gdp_population_WDI.dta") %>%
   filter(year == 2018) %>%
   select(-year)
 
 # Bring in Oil and Gas Rich status countries from Ross-Mahdavi (2015)
-oil <- read_dta("replication_package/Replication/data/ross_mahdavi.dta") %>%
+oil <- read_dta("../replication_package/Replication/data/ross_mahdavi.dta") %>%
   filter(year == 2013) %>%
   rename(oil_pct_2013 = oil_pct) %>%
   select(country, oil_pct_2013)
 
 # Bring in tax rates data
-tax_rates <- read_dta("replication_package/Replication/data/globalETR_bfjz.dta") %>%
+tax_rates <- read_dta("../replication_package/Replication/data/globalETR_bfjz.dta") %>%
   filter(year == 2018)
 
 # Clean up tax_rates data for merge
@@ -49,7 +50,7 @@ merged_data <- merged_data %>%
 merged_data$iso3 <- merged_data$country
 
 # Add income classification and continents from WB (country_frame)
-country_frame <- read_dta("replication_package/Replication/data/country_frame.dta")
+country_frame <- read_dta("../replication_package/Replication/data/country_frame.dta")
 merged_data <- left_join(merged_data, country_frame, by = c("iso3" = "iso3"))
 
 
@@ -91,8 +92,8 @@ merged_data <- merged_data %>%
   mutate(Gpct_tax_noSSC = pct_tax_noSSC / 100)
 
 # Create the plot
-ggplot(merged_data, aes(x = gdp_pc, y = Gpct_tax_noSSC)) +
-  geom_point(color = "black") +
+p1 <- ggplot(merged_data, aes(x = gdp_pc, y = Gpct_tax_noSSC)) +
+  geom_point(color = "blue") +
   scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   labs(
     x = "GDP per capita (Constant 2010 USD, log scale)",
@@ -120,7 +121,7 @@ for (var in vars) {
 }
 
 ##### Draw Figure 1.2 #####
-ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
+p2 <- ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
   geom_point(color = "blue") +
   scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   labs(
@@ -137,7 +138,7 @@ ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
 
 
 ##### Draw Figure 1.3 #####
-ggplot(merged_data, aes(x = gdp_pc, y = r_pct_1100)) +
+p3 <- ggplot(merged_data, aes(x = gdp_pc, y = r_pct_1100)) +
   geom_point(color = "blue") +
   scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   labs(
@@ -153,7 +154,7 @@ ggplot(merged_data, aes(x = gdp_pc, y = r_pct_1100)) +
   )
 
 ##### Draw Figure 1.4 #####
-ggplot(merged_data, aes(x = gdp_pc, y = r_pct_other_taxes)) +
+p4 <- ggplot(merged_data, aes(x = gdp_pc, y = r_pct_other_taxes)) +
   geom_point(color = "blue") +
   scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   labs(
@@ -169,4 +170,9 @@ ggplot(merged_data, aes(x = gdp_pc, y = r_pct_other_taxes)) +
   )
 
 
-write_dta(merged_data, "replication_package/Replication/proc/tax_sample.dta")
+write_dta(merged_data, "../replication_package/Replication/proc/tax_sample.dta")
+
+panel_plot <- p1 + p2 + p3 + p4 + 
+  plot_layout(nrow = 2, ncol = 2)
+
+print(panel_plot)
