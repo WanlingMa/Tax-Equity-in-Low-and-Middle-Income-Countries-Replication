@@ -20,7 +20,7 @@ library(labelled)
 usualsuspects <- c("source", "class_pspr", "oecd", "ctry_year", "ctry_ceq", "year", "ctry", "ctry_code", "class_geo", "class_inc", "class_inc_code", "class_pspr", "class_pspr_code", "class_lend", "class_weo", "decile", "decnum", "ctry_code", "pen_scenario")
 
 # Load the data
-data <- read_dta("replication_package/Replication/data/PSPR_incidence_dirtax_2023.dta")
+data <- read_dta("../data/raw_data/PSPR_incidence_dirtax_2023.dta")
 
 # Keep the usual suspects and variables with 'in_*_dirtax'
 data <- data %>%
@@ -84,7 +84,7 @@ g <- ggplot(data, aes(x = decnum, y = varofint, group = class_inc)) +
         plot.background = element_blank(), # White background
         panel.background = element_blank()) # White panel background
 
-print(g)
+g
 
 # Connected scatter plot for High Income Countries (HIC)
 g_hic <- ggplot(data %>% filter(class_inc == "hic"), aes(x = decnum, y = varofint)) +
@@ -115,7 +115,7 @@ print(g_combined)
 
 #### Draw Figure 4.2 ####
 # Load data on breadth of tax base
-data_pit_parameters <- read_dta("replication_package/Replication/data/PIT_parameters_AJ.dta")
+data_pit_parameters <- read_dta("../data/raw_data/PIT_parameters_AJ.dta")
 
 # Calculate max year by country and filter
 data_pit_parameters <- data_pit_parameters %>%
@@ -133,7 +133,7 @@ threshold <- tempfile()
 write_dta(data_pit_parameters, threshold)
 
 # Load data on top Marginal Tax Rates
-data_top_rates <- read_csv("replication_package/Replication/data/PIT_Top_Rates_2022.csv")
+data_top_rates <- read_csv("../data/raw_data/PIT_Top_Rates_2022.csv")
 
 # Convert top_rate to numeric and handle exceptions
 data_top_rates$top_rate <- as.numeric(data_top_rates$top_rate)
@@ -147,7 +147,7 @@ PIT_rates <- tempfile()
 write_dta(data_top_rates, PIT_rates)
 
 # Load complete sample data
-complete_sample_data <- read_dta("replication_package/Replication/proc/complete_sample_data.dta")
+complete_sample_data <- read_dta("../data/proc/complete_sample_data.dta")
 complete_sample_data <- complete_sample_data %>%
   filter(sample_only_informal_csption != 1) %>%
   select(-sample_only_informal_csption)
@@ -201,7 +201,7 @@ data$color_group <- with(data, ifelse(gdp_pc >= 13000, "High GDP",
                                       ifelse(gdp_pc < 13000 & gdp_pc >= 4000, "Medium GDP", "Low GDP")))
 
 # Top MTR Plot
-ggplot(data, aes(x = gdp_pc, y = top_rate)) +
+print(ggplot(data, aes(x = gdp_pc, y = top_rate)) +
   geom_point(aes(color = color_group, shape = color_group)) +
   scale_x_log10(labels = scales::comma, breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   scale_color_manual(values = c("High GDP" = "forestgreen", "Medium GDP" = "purple", "Low GDP" = "sienna")) +
@@ -211,7 +211,7 @@ ggplot(data, aes(x = gdp_pc, y = top_rate)) +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_blank(),
-        panel.background = element_blank())
+        panel.background = element_blank()))
 
 ### PIT Exemption Threshold Plot
 
@@ -219,7 +219,7 @@ ggplot(data, aes(x = gdp_pc, y = top_rate)) +
 data$gdppc <- exp(data$lg_gdppc)
 
 # PIT Exemption Threshold Plot
-ggplot(data, aes(x = gdppc, y = size_pit)) +
+print(ggplot(data, aes(x = gdppc, y = size_pit)) +
   geom_point(aes(color = color_group, shape = color_group)) +
   scale_x_log10(labels = scales::comma, breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   scale_color_manual(values = c("High GDP" = "forestgreen", "Medium GDP" = "purple", "Low GDP" = "sienna")) +
@@ -229,4 +229,4 @@ ggplot(data, aes(x = gdppc, y = size_pit)) +
   theme_minimal() +
   theme(legend.position = "none",
         plot.background = element_blank(),
-        panel.background = element_blank())
+        panel.background = element_blank()))

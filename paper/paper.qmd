@@ -97,13 +97,34 @@ The dataset utilized in the World Bank Poverty and Shared Prosperity report Chap
 
 ## Figure 1
 ```{r}
+#| label: fig-taxes-gdp
+#| fig-cap: Relationship between tax revenue and gdp per capita
+#| echo: false
+#| warning: false
+#| message: false
 source("../scripts/99-replications-figure1.R")
 ```
 
 ## Figure 2
 ```{r}
+#| label: fig-difficulty-gdp
+#| fig-cap: Relationship between the difficulties of collecting taxes and gdp per capita
+#| echo: false
+#| warning: false
+#| message: false
 source("../scripts/100-replications-figure2.R")
 ```
+
+## Figure 4
+```{r}
+#| label: fig-tax-rate-gdp
+#| fig-cap: Relationship between the tax rate and gdp per capita
+#| echo: false
+#| warning: false
+#| message: false
+source("../scripts/101-replications-figure4.R")
+```
+
 
 # Discussion
 
