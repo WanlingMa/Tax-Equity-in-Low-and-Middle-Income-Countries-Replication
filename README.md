@@ -17,4 +17,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-We use ChatGPT to translate the original Stata code into R. The entire chat history is available in inputs/llms/usage.txt.
+We use ChatGPT to translate the original Stata code into R. It is also used for brainstorming ideas and proofreading the Data section of the paper. The entire chat history is available in inputs/llms/usage.txt.
