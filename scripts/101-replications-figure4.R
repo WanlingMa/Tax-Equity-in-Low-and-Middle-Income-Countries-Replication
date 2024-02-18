@@ -221,6 +221,7 @@ data$gdppc <- exp(data$lg_gdppc)
 # PIT Exemption Threshold Plot
 print(ggplot(data, aes(x = gdppc, y = size_pit)) +
   geom_point(aes(color = color_group, shape = color_group)) +
+  geom_smooth(method = "loess", color = "grey", formula = y ~ x, se = TRUE) + 
   scale_x_log10(labels = scales::comma, breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
   scale_color_manual(values = c("High GDP" = "forestgreen", "Medium GDP" = "purple", "Low GDP" = "sienna")) +
   scale_shape_manual(values = c("High GDP" = 15, "Medium GDP" = 18, "Low GDP" = 17)) +

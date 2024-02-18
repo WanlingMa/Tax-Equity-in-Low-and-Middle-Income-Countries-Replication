@@ -18,6 +18,13 @@ bibliography: references.bib
 
 library(tidyverse)
 library(palmerpenguins)
+library(haven) # for reading .dta files
+library(dplyr) # for data manipulation
+library(ggplot2)
+library(patchwork)
+library(tidyr)
+library(readr)
+library(labelled)
 ```
 
 
@@ -34,7 +41,7 @@ The remainder of this paper is structured as follows. @sec-data....
 
 The original paper, "Tax Equity in Low- and Middle-Income Countries," utilized for replication, was published in the American Economic Association journal in 2024 [@article]. It explores the role of taxation in mitigating income inequality within countries with lower and middle incomes [@article]. This paper seeks to build upon the findings of the original paper, using the same datasets that were last retrieved on February 10th, 2024. 
 
-The two main research questions that were explored in this paper: TODO
+In this paper, we discuss how economic development influences tax structures, with a focus on the shift from indirect to personal income taxes as countries' economies grow, driven by an expanding formal sector and enhanced tax enforcement. Additionally, we examine how the prevalence of the informal sector affects tax progressivity, highlighting that indirect taxes like VAT can become progressive in environments with significant informality. Lastly, we explore the challenges faced in taxing high-income individuals in low- and middle-income countries, including evasion and enforcement limitations, which impede the effectiveness of direct taxes on the wealthy.
 
 ## Methodology
 
@@ -44,9 +51,93 @@ Data collection methods exhibit significant diversity among open sources. We con
 
 This paper analyzes the datasets listed below, which we have organized into three categories: Economic Development and Growth, Labor Market and Employment, and Taxation and Income Distribution.
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+#### Pre-process data ####
+
+target_year <- 2016
+
+# Bring in Population and GDP, World Development Indicators World Bank
+pop <- read_dta("../data/raw_data/gdp_population_WDI.dta") %>%
+  filter(year == target_year) %>%
+  select(-year)
+
+# Bring in Oil and Gas Rich status countries from Ross-Mahdavi (2015)
+oil <- read_dta("../data/raw_data/ross_mahdavi.dta") %>%
+  filter(year == 2013) %>%
+  rename(oil_pct_2013 = oil_pct) %>%
+  select(country, oil_pct_2013)
+
+# Bring in tax rates data
+tax_rates <- read_dta("../data/raw_data/globalETR_bfjz.dta") %>%
+  filter(year == target_year)
+
+# Clean up tax_rates data for merge
+tax_rates <- tax_rates %>%
+  select(-year)
+
+# Merge with population data
+merged_data <- tax_rates %>%
+  left_join(pop, by = c("country" = "country"))
+
+# Keep only the rows that successfully merged
+merged_data <- filter(merged_data, !is.na(pop))
+
+# Merge with oil data
+merged_data <- merged_data %>%
+  left_join(oil, by = c("country" = "country"))
+
+# Adding ISO codes
+merged_data$iso3 <- merged_data$country
+
+# Add income classification and continents from WB (country_frame)
+country_frame <- read_dta("../data/raw_data/country_frame.dta")
+merged_data <- left_join(merged_data, country_frame, by = c("iso3" = "iso3"))
+
+
+# Apply 2 sample conditions: more than 1M inhabitants, less than 33% of GDP arises from oil and gas production
+merged_data <- filter(merged_data, pop > 1000000) # Drop countries with <= 1M inhabitants
+
+# Listing and dropping countries where oil and gas production is >= 33%
+merged_data <- filter(merged_data, is.na(oil_pct_2013) | oil_pct_2013 < 0.33) # Drop oil and gas producers
+merged_data <- rename(merged_data, country_name = "country_name.x", region = "region.x")
+merged_data <- merged_data %>% select(-c("region.y", "country_name.y"))
+
+merged_data <- merged_data %>%
+  mutate(
+    gdp_to_ndp = gdp_currentusd / ndp_usd
+  )
+
+# Updating variables from NDP ratios to GDP ratios
+vars_to_update <- c("pct_tax", "pct_1100", "pct_1200", "pct_2000", "pct_4000", "pct_5000", "pct_6000")
+for(var in vars_to_update) {
+  merged_data[[var]] <- 100 * (merged_data[[var]] / merged_data$gdp_to_ndp)
+}
+
+merged_data <- merged_data %>%
+  mutate(
+    gdp_to_ndp = gdp_currentusd / ndp_usd,
+    pct_tax_noSSC = pct_tax - pct_2000,
+    pct_other_taxes = pct_1200 + pct_4000 + pct_6000,
+    gdp_pc = gdp_currentusd / pop,
+    ln_gdp_pc = log(gdp_pc),
+    ndp_pc = ndp_usd / pop,
+    ln_ndp_pc = log(ndp_pc)
+  )
+
+# Generate Gpct_tax_noSSC as pct_tax_noSSC divided by 100
+merged_data <- merged_data %>%
+  mutate(Gpct_tax_noSSC = pct_tax_noSSC / 100)
+
+```
+
 ### Economic Development and Growth
 
-`data/gdp_populaPon_WDI.dta`
+`data/gdp_population_WDI.dta`
 
 The dataset was obtained from the World Bank’s World Development Indicators @worldDevelopmentIndicators. It encompasses a comprehensive sample from 266 countries and spans from the year 1960 to 2020 [@worldDevelopmentIndicators]. Three key variables available within the database are GDP in 2010 USD (gdp_2010usd), GDP in current USD (gdp_currentusd), and Population (pop). GDP per capita (USD) is calculated as the ratio of gdp_2010usd to population, providing a measure of economic output per person adjusted for inflation [@worldDevelopmentIndicators]. Meanwhile, GDP per capita (current) is calculated by dividing gdp_currentusd by population, offering a snapshot of economic output per person in current currency values [@worldDevelopmentIndicators]. This enables researchers to analyze economic growth, trends, and developments over an extensive time across diverse geographical regions.
 
@@ -73,7 +164,7 @@ The dataset was sourced from the International Labour Organization @selfEmployed
 ### Taxation and Income Distribution
 
 `data/regressions_output_central.dta`
-`data/Country_informaPon.xlsx`
+`data/Country_information.xlsx`
 
 These regression datasets were obtained from the authors’ article “Informality, Consumption Taxes, and Redistribution” @informalConsumption. The column variables include a unique identifier for each country (country_code), the year in which the data was collected (year), the number of iterations performed during the regression analysis (iteration), regression coefficient (b), standard error of the regression coefficient (se), and the coefficient of determination (r2_adj) [@informalConsumption]. These were conducted for the regression analysis of informal shares in household consumption data. 
 
@@ -95,46 +186,291 @@ The dataset utilized in the World Bank Poverty and Shared Prosperity report Chap
 
 # Results
 
-## Figure 1
+@fig-taxes-gdp visualizes the relationship between a country's level of economic development, as denoted by GDP per capita (constant 2010 US dollars, on a logarithmic scale with breaks at \$500, \$2000, \$10,000, and \$50,000), and the total share of GDP allocated to tax revenue, excluding social security contributions (SSC). This exclusion targets a focus on tax revenues more directly amenable to policy adjustments in the sphere of redistribution. The y-axis scale ranges from 0.0 to 0.5, indicating a span from no tax revenue to half of the GDP attributed to taxes.
+
+Comprising data from 132 countries that satisfy the inclusion criteria of having a population above one million and deriving less than one-third of their GDP from oil and gas revenue, @fig-taxes-gdp broadly demonstrates a pattern where the share of GDP collected as tax revenue increases concomitantly with GDP per capita. This observation is visualized in a trend line, modeled via a LOESS regression (with a 95% confidence interval shaded in grey), which gently ascends from left to right, suggesting a positive correlation between economic development (GDP per capita) and the proportion of GDP collected through taxes.
+
+The majority of countries’ data points cluster around the smoothed trend line, underscoring a general conformity to the depicted relationship. However, there are notable exceptions. A few outliers consist of countries with a relatively high GDP per capita (around \$30,000) yet almost negligible tax revenue shares. The presence of outliers suggests that while a positive correlation exists, the relationship is not without its exceptions. This variance underlines the complexity of tax system dynamics and the factors influencing tax collection beyond mere economic development.
+
 ```{r}
 #| label: fig-taxes-gdp
-#| fig-cap: Relationship between tax revenue and gdp per capita
+#| fig-cap: Total Tax Revenue (excl. SSC)
 #| echo: false
 #| warning: false
 #| message: false
-source("../scripts/99-replications-figure1.R")
+
+ggplot(merged_data, aes(x = gdp_pc, y = Gpct_tax_noSSC)) +
+  geom_point(color = "blue") +
+  geom_smooth(method = "loess", color = "grey", formula = y ~ x, se = TRUE) + 
+  scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 2000, 10000, 50000)) +
+  labs(
+    x = "GDP per capita (Constant 2010 USD, log scale)",
+    y = "Share of GDP"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.background = element_blank(),
+    panel.grid.minor = element_line(color = "grey", linetype = "dotted"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey", linetype = "dotted"),
+    plot.subtitle = element_text(size = rel(1.2))
+  )
 ```
 
-## Figure 2
 ```{r}
-#| label: fig-difficulty-gdp
-#| fig-cap: Relationship between the difficulties of collecting taxes and gdp per capita
+#| label: fig-indrecttax-gdp
+#| fig-cap: Relationship between indirect tax revenue and gdp per capita
 #| echo: false
 #| warning: false
 #| message: false
-source("../scripts/100-replications-figure2.R")
+
+##### Mutate Data #####
+vars <- c("pct_tax_noSSC", "pct_1100", "pct_5000", "pct_other_taxes", "pct_1200", "pct_4000", "pct_6000")
+
+# Generating ratios
+for (var in vars) {
+  new_var_name <- paste0("r_", var)
+  merged_data[[new_var_name]] <- merged_data[[var]] / merged_data$pct_tax_noSSC
+}
+
+ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
+  geom_point(color = "blue") +
+  scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 2000, 10000, 50000)) +
+  labs(
+    x = "GDP per capita (Constant 2010 USD, log scale)",
+    y = "Share of Tax Revenue"
+  ) +
+  ylim(0, 1) + 
+  theme_minimal() +
+  theme(
+    plot.background = element_blank(),
+    plot.subtitle = element_text(size = rel(1.2))
+  )
 ```
 
-## Figure 4
+
+
+@fig-avg-tax-rate-vs-income-decile provides insights into how the average effective income tax rates vary across income deciles within 74 countries of varying income levels in 2022. These countries were selected based on the availability of fiscal incidence reports, with 30 categorized as high-income countries, 21 as upper-middle-income countries, and 23 as lower-income countries based on the World Bank [@article]. It highlights two main findings, which are higher average tax rates in higher income countries and the progressivity of income tax rates. We see that the average tax rates for income taxes are higher in high-income countries compared to low- and middle-income countries across all deciles. Specifically, the average tax rate for the highest income level (10th decile) in high-income countries exceeds 20%, while it remains below 10% for both upper-middle and lower-income countries (see @fig-avg-tax-rate-vs-income-decile). Similarly, the average tax rate for the lowest income level (1st decile) surpasses 5% in high-income countries but remains below 5% in lower-income and middle-income countries. 
+
+Additionally, the figure illustrates the progressive nature of income tax rates, particularly in high-income countries. Within these countries, the average tax rates increase significantly across income deciles, from the 1st decile to the 10th decile of income distribution. While the households in the 10th decile in high-income countries bear more than 20% tax burden, the corresponding figures for low- and middle-income countries are 6% and 8% respectively (see @fig-avg-tax-rate-vs-income-decile). This observation indicates the progressive structure of the income tax system, where households with higher incomes contribute a larger proportion of their income in taxes compared to those with lower incomes. These findings underscore the differences in average income tax rates between different income levels and deciles, which clarifies the progressive nature of income tax systems in high-income countries and emphasizes the importance of considering the level of economic development in the design of tax policies.
+
+
 ```{r}
-#| label: fig-tax-rate-gdp
-#| fig-cap: Relationship between the tax rate and gdp per capita
 #| echo: false
 #| warning: false
 #| message: false
-source("../scripts/101-replications-figure4.R")
+
+### Pre-process the data for Figure 7
+
+# Define the usual suspects (assuming this is a vector of variable names)
+usualsuspects <- c("source", "class_pspr", "oecd", "ctry_year", "ctry_ceq", "year", "ctry", "ctry_code", "class_geo", "class_inc", "class_inc_code", "class_pspr", "class_pspr_code", "class_lend", "class_weo", "decile", "decnum", "ctry_code", "pen_scenario")
+
+# Load the data
+data <- read_dta("../data/raw_data/PSPR_incidence_dirtax_2023.dta")
+
+# Keep the usual suspects and variables with 'in_*_dirtax'
+data <- data %>%
+  select(all_of(usualsuspects), starts_with("in_"), ends_with("_dirtax"))
+
+# Replace class_inc values
+data$class_inc <- ifelse(data$class_inc == "lic", "lmic", data$class_inc)
+
+
+# Further data manipulation
+data <- data %>%
+  select(matches(".*_pdi.*"), matches(".*_pgt.*"), all_of(usualsuspects)) %>%
+  arrange(ctry, year, decnum) %>%
+  mutate(across(matches(".*_pdi.*"), ~.x * 100, .names = "pdi_var"),
+         across(matches(".*_pgt.*"), ~.x * 100, .names = "pgt_var")) %>%
+  mutate(varofint = ifelse(is.na(pdi_var), abs(pgt_var), abs(pdi_var))) %>%
+  select(-matches(".*_pdi.*"), -matches(".*_pgt.*"), -matches("^ie_flag_p.*"))
+
+# For countries with more than one project, pick the last one
+data <- data %>%
+  group_by(ctry) %>%
+  mutate(yearmax = max(year, na.rm = TRUE),
+         yearmax_av = mean(yearmax, na.rm = TRUE)) %>%
+  ungroup() %>%
+  filter(year == yearmax) %>%
+  select(-yearmax, -yearmax_av)
+
+# Collapse the dataset to summary statistics
+# Assuming 'reportstat' is "median" and 'classificvariable' is "class_inc" as per your context
+data_collapsed <- data %>%
+  group_by(!!sym("class_inc"), decnum) %>%
+  summarise(varofint = median(varofint, na.rm = TRUE), # Calculate median of varofint
+            count = n()) %>%
+  ungroup()
+
+# Labeling variables (R doesn't use variable labels in the same way as Stata, but for documentation)
+# You can store metadata or use attributes in R for a similar purpose
+attr(data_collapsed$varofint, "label") <- paste("median", "dirtax", sep = "-")
+
+# Reordering variables (dplyr automatically orders variables based on the group_by and summarise steps)
+# If you need to explicitly change the order, you can use select()
+data_collapsed <- data_collapsed %>%
+  select(class_inc, !!sym("class_inc"), decnum, varofint, count)
+
+# Drop observations where decnum == 11
+data_collapsed <- data_collapsed %>%
+  filter(decnum != 11)
+
+data <- data_collapsed
 ```
 
+```{r}
+#| label: fig-avg-tax-rate-vs-income-decile
+#| fig-cap: De-Facto Distributional Incidence of Direct Taxes
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(data, aes(x = decnum, y = varofint, color = class_inc)) +
+  geom_line(aes(linetype = class_inc)) + # Use different linetypes for each class_inc
+  geom_point(aes(shape = class_inc)) + # Use different shapes for each class_inc
+  scale_color_manual(values = c("hic" = "forestgreen", "lmic" = "sienna", "umic" = "purple")) +
+  labs(x = "Income Decile (within country)", 
+       y = "Average Tax Rate") +
+  theme_minimal() +
+  theme(plot.background = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "none") +
+  annotate("text", x = 7.3, y = 18.5, label = "High Income", color = "forestgreen") +
+  annotate("text", x = 7.2, y = 7.8, label = "Upper-Middle Income", color = "purple") +
+  annotate("text", x = 8.5, y = 1, label = "Lower Income", color = "sienna")
+```
+
+```{r}
+#| echo: FALSE
+#| warning: FALSE
+#| message: FALSE
+
+
+### Pre process for Figure 8
+
+# Load data on breadth of tax base
+data_pit_parameters <- read_dta("../data/raw_data/PIT_parameters_AJ.dta")
+
+# Calculate max year by country and filter
+data_pit_parameters <- data_pit_parameters %>%
+  group_by(country) %>%
+  filter(year == max(year)) %>%
+  ungroup()
+
+# Rename variables and keep specific columns
+data_pit_parameters <- data_pit_parameters %>%
+  rename(iso2 = country_code) %>%
+  select(iso2, lg_gdppc, size_pit)
+
+# Save the intermediate data frame
+threshold <- tempfile()
+write_dta(data_pit_parameters, threshold)
+
+# Load data on top Marginal Tax Rates
+data_top_rates <- read_csv("../data/raw_data/PIT_Top_Rates_2022.csv")
+
+# Convert top_rate to numeric and handle exceptions
+data_top_rates$top_rate <- as.numeric(data_top_rates$top_rate)
+data_top_rates <- data_top_rates %>%
+  rename(iso2 = alpha_2) %>%
+  filter(iso2 != "CI") %>%
+  select(iso2, top_rate)
+
+# Save the intermediate data frame
+PIT_rates <- tempfile()
+write_dta(data_top_rates, PIT_rates)
+
+# Load complete sample data
+complete_sample_data <- read_dta("../data/proc/complete_sample_data.dta")
+complete_sample_data <- complete_sample_data %>%
+  filter(sample_only_informal_csption != 1) %>%
+  select(-sample_only_informal_csption)
+
+# Merge with PIT rates
+complete_sample_data <- complete_sample_data %>%
+  left_join(data_top_rates, by = "iso2") %>%
+  filter(!is.na(top_rate))
+
+# Merge with threshold data
+complete_sample_data <- complete_sample_data %>%
+  left_join(data_pit_parameters, by = "iso2") %>%
+  mutate(threshold_only = ifelse(is.na(size_pit), 0, 1))
+
+# Generate income_groups based on incomelevelname
+complete_sample_data$income_groups <- case_when(
+  complete_sample_data$incomelevelname == "Low income" ~ 1,
+  complete_sample_data$incomelevelname == "Lower middle income" ~ 2,
+  complete_sample_data$incomelevelname == "Upper middle income" ~ 3,
+  complete_sample_data$incomelevelname == "High income" ~ 4,
+  TRUE ~ NA_integer_
+)
+
+# Convert income_groups to a factor with labels for better readability
+complete_sample_data$income_groups <- factor(complete_sample_data$income_groups, 
+                                             levels = c(1, 2, 3, 4),
+                                             labels = c("Low income", "Lower middle income", "Upper middle income", "High income"))
+
+# Assuming 'data' is your data frame containing 'top_rate', 'gdp_pc', and 'lg_gdppc'
+data <- complete_sample_data
+# Create a new variable for color coding based on GDP per capita thresholds
+data$color_group <- with(data, ifelse(gdp_pc >= 13000, "High GDP",
+                                      ifelse(gdp_pc < 13000 & gdp_pc >= 4000, "Medium GDP", "Low GDP")))
+
+```
+
+```{r}
+#| label: fig-statutory-tax-rate-vs-gdp-level
+#| fig-cap: Top Statutory Tax Rate of Personal Income Tax
+#| echo: false
+#| warning: false
+#| message: false 
+
+ggplot(data, aes(x = gdp_pc, y = top_rate)) +
+  geom_point(aes(color = color_group, shape = color_group)) +
+  scale_x_log10(labels = scales::comma, breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
+  scale_color_manual(values = c("High GDP" = "forestgreen", "Medium GDP" = "purple", "Low GDP" = "sienna")) +
+  scale_shape_manual(values = c("High GDP" = 15, "Medium GDP" = 18, "Low GDP" = 17)) +
+  labs(x = "GDP per capita (Constant 2010 USD, log scale)", y = "Tax Rate") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_blank(),
+        panel.background = element_blank())
+```
+
+@fig-statutory-tax-rate-vs-gdp-level shows the top statutory tax rate of the personal income tax across 129 countries, utilizing data from 2023 collected by the authors [@article] and particularly distinguishing between high-income countries and low- and middle-income countries. On average, the top statutory tax rate in high-income countries is marginally higher, standing at 35%, compared to 29% in low- and middle-income countries (see @fig-statutory-tax-rate-vs-gdp-level). Despite the slight variation in top statutory tax rates, Figure 8 does not reflect a proportional relationship between GDP per capita and the top statutory tax rate. This underscores the nuanced dynamics of personal income taxation across different income levels and economic contexts.
+
+@fig-workforce-share-vs-gdp-level shows the share of the active workforce subject to personal income tax across varying levels of economic development, as indicated by GDP per capita. It encompasses 92 countries and underscores the evolution of personal income taxation policies from lower-income to high-income countries [@article]. It reveals a distinct trend: as economic development progresses, there is a gradual increase in the share of the workforce subject to personal income tax obligations (see @fig-workforce-share-vs-gdp-level). In lower-income countries, the coverage of the personal income tax is minimal, with the lowest point hovering slightly above 0 share of the workforce and slightly over 500 GDP per capita. Conversely, high-income countries demonstrate a significantly higher share of the workforce population legally liable to pay personal income taxes, with the highest point approaching nearly 100 share of the workforce and exceeding 50,000 GDP per capita (see @fig-workforce-share-vs-gdp-level). These key findings highlight the differences in the implementation and coverage of personal income taxation policies between high-income and low- and middle-income countries, showing the evolution of tax systems across varying levels of economic development.
+
+```{r}
+#| label: fig-workforce-share-vs-gdp-level
+#| fig-cap: Share of Workforce Legally Subject to Personal Income Tax
+#| echo: false
+#| warning: false
+#| message: false 
+#| 
+data$gdppc <- exp(data$lg_gdppc)
+
+ggplot(data, aes(x = gdppc, y = size_pit)) +
+  geom_point(aes(color = color_group, shape = color_group)) +
+  geom_smooth(method = "loess", color = "grey", formula = y ~ x, se = TRUE) + 
+  scale_x_log10(labels = scales::comma, breaks = c(500, 1000, 2000, 5000, 10000, 25000, 50000)) +
+  scale_color_manual(values = c("High GDP" = "forestgreen", "Medium GDP" = "purple", "Low GDP" = "sienna")) +
+  scale_shape_manual(values = c("High GDP" = 15, "Medium GDP" = 18, "Low GDP" = 17)) +
+  labs(x = "GDP per capita (Constant 2010 USD, log scale)", y = "Share of Workforce",
+       subtitle = "Share of Workforce Legally Subject to Personal Income Tax") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.background = element_blank(),
+        panel.background = element_blank())
+```
 
 # Discussion
 
-## First discussion point {#sec-first-point}
+## Tax Structure and Economic Development {#sec-first-point}
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+## Informality and Taxation
 
-## Second discussion point
-
-## Third discussion point
+## Taxing the Rich and Tax Evasion
 
 ## Weaknesses and next steps
 

@@ -15,9 +15,11 @@ library(patchwork)
 
 #### Pre-process data ####
 
+target_year <- 2018
+
 # Bring in Population and GDP, World Development Indicators World Bank
 pop <- read_dta("../data/raw_data/gdp_population_WDI.dta") %>%
-  filter(year == 2018) %>%
+  filter(year == target_year) %>%
   select(-year)
 
 # Bring in Oil and Gas Rich status countries from Ross-Mahdavi (2015)
@@ -28,7 +30,7 @@ oil <- read_dta("../data/raw_data/ross_mahdavi.dta") %>%
 
 # Bring in tax rates data
 tax_rates <- read_dta("../data/raw_data/globalETR_bfjz.dta") %>%
-  filter(year == 2018)
+  filter(year == target_year)
 
 # Clean up tax_rates data for merge
 tax_rates <- tax_rates %>%
@@ -92,7 +94,8 @@ merged_data <- merged_data %>%
 
 # Create the plot
 p1 <- ggplot(merged_data, aes(x = gdp_pc, y = Gpct_tax_noSSC)) +
-  geom_point(color = "blue") +
+  geom_point(color = "lightgrey") +
+  geom_smooth(method = "loess", color = "mediumblue", formula = y ~ x, se = TRUE) + 
   scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 2000, 10000, 50000)) +
   labs(
     x = "GDP per capita (Constant 2010 USD, log scale)",
