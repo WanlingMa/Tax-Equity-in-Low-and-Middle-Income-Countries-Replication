@@ -302,9 +302,9 @@ combined_plot
 write_dta(merged_data, "../data/proc/tax_sample.dta")
 ```
 
-In the first graph of @fig-taxrevenue-gdp-diff-source, titled "Indirect Tax", the analysis reveals a gradually declining trend in the share of tax revenue derived from indirect taxes, such as the value-added tax, sales taxes, excises, and tariffs, as a country's GDP per capita increases. This depiction underscores a noteworthy pattern wherein the reliance on indirect taxation decreases with economic advancement. The x-axis, representing GDP per capita, maintains the same log scale as in @fig-taxes-gdp, spanning from \$500 to \$50,000, while the y-axis scales from 0 to 1, indicating the proportion of total tax revenue attributed to indirect taxes. The uniformly gentle downward trajectory highlights a shifting tax structure in which nations with a lower GDP per capita have a higher propensity to lean on indirect taxes, a practice that progressively diminishes in favor of other tax forms as economies grow and develop.
+The first graph of @fig-taxrevenue-gdp-diff-source reveals a gradually declining trend in the share of tax revenue derived from indirect taxes, such as the value-added tax, sales taxes, excises, and tariffs, as a country's GDP per capita increases. This depiction underscores a noteworthy pattern wherein the reliance on indirect taxation decreases with economic advancement. The x-axis, representing GDP per capita, maintains the same log scale as in @fig-taxes-gdp, spanning from \$500 to \$50,000, while the y-axis scales from 0 to 1, indicating the proportion of total tax revenue attributed to indirect taxes. The uniformly gentle downward trajectory highlights a shifting tax structure in which nations with a lower GDP per capita have a higher propensity to lean on indirect taxes, a practice that progressively diminishes in favor of other tax forms as economies grow and develop.
 
-Conversely, the second graph of @fig-taxrevenue-gdp-diff-source, showcasing "Personal Income Tax", presents a slight but consistently upward trend, suggesting that the share of personal income tax in total tax revenue tends to increase with a country's economic development. This pattern aligns with the transition observed in more developed economies, where direct taxation, particularly on personal income, becomes a more significant contributor to the tax base, reflecting a move towards more progressive taxation policies. In contrast, the third graph of @fig-taxrevenue-gdp-diff-source, "All Other Tax," exhibits a flat trend, indicating that the aggregate contribution of corporate income taxes, property, and wealth taxes to total tax revenue remains relatively stable across different levels of GDP per capita. Without the inclusion of confidence intervals in these panels, the clean, unobstructed trends in each graph offer a clear perspective on how the composition of tax revenue evolves with economic maturity, reinforcing the dynamic nature of tax systems and their responsiveness to broader economic contexts.
+Conversely, the second graph of @fig-taxrevenue-gdp-diff-source presents a slight but consistently upward trend, suggesting that the share of personal income tax in total tax revenue tends to increase with a country's economic development. This pattern aligns with the transition observed in more developed economies, where direct taxation, particularly on personal income, becomes a more significant contributor to the tax base, reflecting a move towards more progressive taxation policies. In contrast, the third graph of @fig-taxrevenue-gdp-diff-source exhibits a flat trend, indicating that the aggregate contribution of corporate income taxes, property, and wealth taxes to total tax revenue remains relatively stable across different levels of GDP per capita. Without the inclusion of confidence intervals in these panels, the clean, unobstructed trends in each graph offer a clear perspective on how the composition of tax revenue evolves with economic maturity, reinforcing the dynamic nature of tax systems and their responsiveness to broader economic contexts.
 
 ```{r}
 #| echo: false
@@ -554,7 +554,21 @@ ggplot(data, aes(x = gdppc, y = size_pit)) +
 
 # Discussion
 
-## Tax Structure and Economic Development {#sec-first-point}
+This paper expands upon the analysis presented in "Tax Equity in Low- and Middle-Income Countries" by Bachas, Jensen, and Gadenne, focusing on how economic growth shapes tax systems and influences tax equity [@article]. By examining the transition from indirect taxation, such as VAT, to direct taxation, including personal income taxes, as economies develop, this research provides insights into the mechanisms through which tax systems evolve and their implications for income inequality.
+
+## Economic Development and the Evolution of Tax Structures: Findings and Implications
+
+The key findings of our work underscore several important aspects of tax policy and its relationship with economic development:
+
+1. Shift from Indirect to Direct Taxation: Our analysis, supported by data visualization in @fig-taxes-gdp, illustrates a clear trend of countries moving towards a greater reliance on direct taxes as their GDP per capita increases. This shift signifies a crucial step towards more progressive tax systems that can potentially reduce income inequality by placing a larger tax burden on those with higher incomes.
+
+2. Role of the Informal Sector: The paper highlights the complex role of the informal sector in tax progressivity. Contrary to the conventional view that indirect taxes are regressive, our findings suggest that in economies with a significant informal sector, indirect taxes like VAT can exhibit progressive features. This observation, depicted in the nuanced analysis in @fig-taxrevenue-gdp-diff-source, challenges traditional tax policy narratives and emphasizes the need for a more context-specific approach to tax policy design.
+
+3. Challenges in Taxing High-Income Individuals: @fig-statutory-tax-rate-vs-gdp-level and @fig-workforce-share-vs-gdp-level shows the difficulties encountered in effectively taxing high-income earners in low- and middle-income countries. Issues of tax evasion and enforcement challenges are major barriers to the effectiveness of direct taxes on the wealthy. These challenges are critical for understanding the limitations of current tax systems in achieving equity, as shown in our detailed examination of tax policy implications across various economies.
+
+The research methodology and the analysis of the datasets have allowed us to draw these conclusions and offer a nuanced understanding of tax systems' evolution with economic development. By employing the R programming language and the tidyverse package for data cleaning and analysis, we have meticulously examined the role of taxation in economic contexts characterized by varying degrees of informality and enforcement capabilities.
+
+
 
 ## Informality and Taxation
 
@@ -562,7 +576,15 @@ ggplot(data, aes(x = gdppc, y = size_pit)) +
 
 ## Weaknesses and next steps
 
-Weaknesses and next steps should also be included.
+It is worthy to note that our work also uncovers several issues that warrant further investigation:
+
+1. Data Limitations and Generalizability: One emerging issue is the limitation related to data availability and its impact on the generalizability of our findings. The reliance on formal sector data may not fully capture the dynamics in countries with large informal sectors, potentially skewing our understanding of tax progressivity.
+
+2. Policy Implementation Challenges: While our analysis suggests pathways for more equitable tax systems, the practical challenges of implementing such changes in low- and middle-income countries remain a significant concern. The transition to more progressive tax systems requires not only political will but also enhancements in administrative capabilities and enforcement mechanisms.
+
+3. Economic Diversification and Tax Policy: Our findings also prompt questions about how economic diversification affects tax policy choices. As countries develop, the shift in their economic base—from agriculture to industry and services—could have profound implications for tax policy design and effectiveness.
+
+In conclusion, while our paper builds upon and extends the findings of Bachas, Jensen, and Gadenne (2024), it also highlights the complexity of tax policy in the context of economic development. The insights provided through our analysis of tax structures, the role of the informal sector, and the challenges of taxing high-income individuals offer valuable contributions to the ongoing discussion about how to design equitable and effective tax systems in low- and middle-income countries. Further research is needed to address the emergent issues and to refine our understanding of the optimal tax policy frameworks that can support equitable economic development.
 
 
 
