@@ -1,5 +1,5 @@
 ---
-title: "Tax-Equity-in-Low-and-Middle-Income-Countries-Replication"
+title: "The Impact of Tax Policy Evolution on Economic Development and Income Inequality"
 author: 
   - Amie Liu, Wanling Ma
 thanks: "Code and data are available at: https://github.com/WanlingMa/Tax-Equity-in-Low-and-Middle-Income-Countries-Replication"
