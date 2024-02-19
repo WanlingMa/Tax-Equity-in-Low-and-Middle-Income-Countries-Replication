@@ -218,8 +218,6 @@ ggplot(merged_data, aes(x = gdp_pc, y = Gpct_tax_noSSC)) +
 ```
 
 ```{r}
-#| label: fig-indrecttax-gdp
-#| fig-cap: Relationship between indirect tax revenue and gdp per capita
 #| echo: false
 #| warning: false
 #| message: false
@@ -233,12 +231,13 @@ for (var in vars) {
   merged_data[[new_var_name]] <- merged_data[[var]] / merged_data$pct_tax_noSSC
 }
 
-ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
+plot_1 <- ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
   geom_point(color = "blue") +
   scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 2000, 10000, 50000)) +
   labs(
     x = "GDP per capita (Constant 2010 USD, log scale)",
-    y = "Share of Tax Revenue"
+    y = "Share of Tax Revenue",
+    subtitle = "Indirect Tax"
   ) +
   ylim(0, 1) + 
   theme_minimal() +
@@ -248,7 +247,96 @@ ggplot(merged_data, aes(x = gdp_pc, y = r_pct_5000)) +
   )
 ```
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
 
+plot_2 <- ggplot(merged_data, aes(x = gdp_pc, y = r_pct_1100)) +
+  geom_point(color = "blue") +
+  scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 2000, 10000, 50000)) +
+  labs(
+    x = "GDP per capita (Constant 2010 USD, log scale)",
+    y = "Share of Tax Revenue",
+    subtitles = "Personal Income Tax"
+  ) +
+  ylim(0, 1) + 
+  theme_minimal() +
+  theme(
+    plot.background = element_blank(),
+    plot.subtitle = element_text(size = rel(1.2))
+  )
+
+
+```
+
+```{r}
+#| label: fig-taxrevenue-gdp-diff-source
+#| fig-cap: Share of Tax Revenue from different sources
+#| echo: false
+#| warning: false
+#| message: false
+#| fig.height: 12
+#| fig.width: 9
+
+plot_3 <- ggplot(merged_data, aes(x = gdp_pc, y = r_pct_other_taxes)) +
+  geom_point(color = "blue") +
+  scale_x_log10(labels = scales::label_dollar(), breaks = c(500, 2000, 10000, 50000)) +
+  labs(
+    x = "GDP per capita (Constant 2010 USD, log scale)",
+    y = "Share of Tax Revenue",
+    subtitles = "All Other Taxes"
+  ) +
+  ylim(0, 1) + 
+  theme_minimal() +
+  theme(
+    plot.background = element_blank(),
+    plot.subtitle = element_text(size = rel(1.2))
+  )
+
+combined_plot <- plot_1 + plot_2 + plot_3 + plot_layout(nrow = 3)
+combined_plot
+
+
+# Store merged dataset to proc/ for the following figures
+write_dta(merged_data, "../data/proc/tax_sample.dta")
+```
+
+In the first graph of @fig-taxrevenue-gdp-diff-source, titled "Indirect Tax", the analysis reveals a gradually declining trend in the share of tax revenue derived from indirect taxes, such as the value-added tax, sales taxes, excises, and tariffs, as a country's GDP per capita increases. This depiction underscores a noteworthy pattern wherein the reliance on indirect taxation decreases with economic advancement. The x-axis, representing GDP per capita, maintains the same log scale as in @fig-taxes-gdp, spanning from \$500 to \$50,000, while the y-axis scales from 0 to 1, indicating the proportion of total tax revenue attributed to indirect taxes. The uniformly gentle downward trajectory highlights a shifting tax structure in which nations with a lower GDP per capita have a higher propensity to lean on indirect taxes, a practice that progressively diminishes in favor of other tax forms as economies grow and develop.
+
+Conversely, the second graph of @fig-taxrevenue-gdp-diff-source, showcasing "Personal Income Tax", presents a slight but consistently upward trend, suggesting that the share of personal income tax in total tax revenue tends to increase with a country's economic development. This pattern aligns with the transition observed in more developed economies, where direct taxation, particularly on personal income, becomes a more significant contributor to the tax base, reflecting a move towards more progressive taxation policies. In contrast, the third graph of @fig-taxrevenue-gdp-diff-source, "All Other Tax," exhibits a flat trend, indicating that the aggregate contribution of corporate income taxes, property, and wealth taxes to total tax revenue remains relatively stable across different levels of GDP per capita. Without the inclusion of confidence intervals in these panels, the clean, unobstructed trends in each graph offer a clear perspective on how the composition of tax revenue evolves with economic maturity, reinforcing the dynamic nature of tax systems and their responsiveness to broader economic contexts.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+source("../scripts/100-replications-figure2.R")
+```
+
+```{r}
+#| label: fig-informality-selfemployment
+#| fig-cap: Self Employment
+#| echo: false
+#| warning: false
+#| message: false
+
+print(plot1)
+```
+
+```{r}
+#| label: fig-informality-consumption
+#| fig-cap: Consumption in Traditional Stores
+#| echo: false
+#| warning: false
+#| message: false
+
+print(plot2)
+```
+
+@fig-informality-selfemployment and @fig-informality-consumption articulately illustrates the inverse relationship between economic development and the prevalence of informal economic activities, utilizing GDP per capita as a consistent measure of economic development across both figures. In @fig-informality-selfemployment, a markedly steep downward trend is shown. The graph delineates the share of self-employment within the active workforce—a proxy indicator for informality in labor—plummeting as the GDP per capita increases. With the x-axis mirroring the range of GDP per capita found in @fig-taxes-gdp, and the y-axis proportionately scaling from 0 to 1 to represent the share of employment, the visualization clearly communicates a significant decrease in self-employment ratios, moving from low-income to high-income countries. This correlation underscores the observation that the formalization of labor concomitantly rises with economic prosperity, highlighting a transition from self-employed to formally employed work statuses as nations advance economically.
+
+Similarly, @fig-informality-consumption exhibits an equally steep downward trajectory, mapping the share of total consumption allocated towards traditional retail outlets—such as street stalls, public markets, and corner stores—against GDP per capita. This axis configuration adheres to the same range as @fig-taxes-gdp, facilitating a direct comparison of informality trends across different dimensions of the economy. The decline from almost universal reliance on informal retail in low-income countries, denoted by a share approaching 1, to a minimal percentage in high-income countries, reaching down to 0.12, starkly exemplifies the diminishing role of informal consumption channels with advancing economic maturity. The parallel between the steep decline in both informal labor and consumption vividly encapsulates the broader economic transition from informality to formality, reinforcing the theme that economic growth aligns with a decreasing share of the informal sector within the economy.
 
 @fig-avg-tax-rate-vs-income-decile provides insights into how the average effective income tax rates vary across income deciles within 74 countries of varying income levels in 2022. These countries were selected based on the availability of fiscal incidence reports, with 30 categorized as high-income countries, 21 as upper-middle-income countries, and 23 as lower-income countries based on the World Bank [@article]. It highlights two main findings, which are higher average tax rates in higher income countries and the progressivity of income tax rates. We see that the average tax rates for income taxes are higher in high-income countries compared to low- and middle-income countries across all deciles. Specifically, the average tax rate for the highest income level (10th decile) in high-income countries exceeds 20%, while it remains below 10% for both upper-middle and lower-income countries (see @fig-avg-tax-rate-vs-income-decile). Similarly, the average tax rate for the lowest income level (1st decile) surpasses 5% in high-income countries but remains below 5% in lower-income and middle-income countries. 
 
@@ -470,7 +558,7 @@ ggplot(data, aes(x = gdppc, y = size_pit)) +
 
 ## Informality and Taxation
 
-## Taxing the Rich and Tax Evasion
+## Ethics and Biases
 
 ## Weaknesses and next steps
 

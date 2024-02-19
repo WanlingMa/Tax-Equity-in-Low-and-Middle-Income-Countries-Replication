@@ -12,6 +12,7 @@ library(dplyr)
 library(haven)
 library(readr)
 library(stringr)
+library(patchwork)
 library(readxl)
 
 #### Pre-process data ####
@@ -66,7 +67,6 @@ merged_data <- self_employment_data %>%
   left_join(read_dta(tempfile_pop), by = "country") %>%
   filter(!is.na(self_employed_share))
 
-nrow(merged_data)
 # Optionally, perform additional filtering based on `self_employed_share` if needed
 # This is akin to the comments in the Stata code about aligning samples
 
@@ -87,7 +87,7 @@ write_dta(final_sample, "../data/proc/tax_employment_sample.dta")
 final_sample$gdp_pc_log <- log(final_sample$gdp_pc)
 
 # Create the plot
-plot <- ggplot(data = final_sample, aes(x = gdp_pc_log, y = self_employed_share)) +
+plot1 <- ggplot(data = final_sample, aes(x = gdp_pc_log, y = self_employed_share)) +
   geom_point(color = "mediumblue") +
   scale_x_continuous(name = "GDP per capita (Constant 2010 USD, log scale)",
                      breaks = log(c(500, 1000, 2000, 5000, 10000, 25000, 50000)),
@@ -96,18 +96,13 @@ plot <- ggplot(data = final_sample, aes(x = gdp_pc_log, y = self_employed_share)
                      limits = c(0, 1),
                      breaks = seq(0, 1, 0.2),
                      minor_breaks = seq(0, 1, 0.2)) +
-  theme_bw() +  # White background
-  theme(plot.background = element_blank(),
-        panel.grid.minor = element_line(color = "gray90", size = 0.5),
-        axis.title.x = element_text(size = rel(1), margin = margin(t = 10)),
-        axis.title.y = element_text(size = rel(1), margin = margin(r = 10)),
-        axis.text = element_text(size = rel(1)),
-        plot.title = element_text(size = rel(1.2))) +
+  theme_minimal() +  # White background
+  theme(plot.background = element_blank(), 
+        panel.background = element_blank(),
+        panel.grid.major.x = element_line(color = "grey90"),
+        panel.grid.minor.y = element_line(color = "grey90", linetype = "dotted")) +
   ggtitle("Self-Employment") +
   theme(legend.position = "none")  # Remove legend
-
-# Print the plot
-print(plot)
 
 #### Draw Figure 2.2 ####
 
@@ -167,7 +162,7 @@ merged_data$b1 <- merged_data$b1 / 100
 
 
 # Create the plot
-plot <- ggplot(data = merged_data, aes(x = log_GDP, y = b1)) +
+plot2 <- ggplot(data = merged_data, aes(x = log_GDP, y = b1)) +
   geom_point(color = "mediumblue") +
   scale_x_continuous(name = "GDP per capita (Constant 2010 USD, log scale)",
                      breaks = log(c(500, 1000, 2000, 5000, 10000, 25000, 50000)),
@@ -185,5 +180,3 @@ plot <- ggplot(data = merged_data, aes(x = log_GDP, y = b1)) +
         panel.grid.major.x = element_line(color = "grey90"),
         panel.grid.minor.y = element_line(color = "grey90", linetype = "dotted"))
 
-# Print the plot
-print(plot)
