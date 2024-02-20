@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repo contains all scripts, sources, and codes to reproduce ["Tax Equity in Low- and Middle-Income Countries" by Pierre Bachas, Anders Jensen, and Lucie Gadenne](https://www.aeaweb.org/articles?id=10.1257/jep.38.1.55&ArticleSearch%5Bwithin%5D%5Barticletitle%5D=1&ArticleSearch%5Bwithin%5D%5Barticleabstract%5D=1&ArticleSearch%5Bwithin%5D%5Bauthorlast%5D=1&ArticleSearch%5Bq%5D=&JelClass%5Bvalue%5D=0&journal=3&from=j). The dataset was retrieved from [openICPSR](https://www.openicpsr.org/openicpsr/project/194851/version/V1/view). Further findings from the original paper, including the evolution of tax policy and its impact on income inequality and economic development, are all extended in this analysis. 
+This repo contains all scripts, sources, and codes to reproduce ["Tax Equity in Low- and Middle-Income Countries" by Pierre Bachas, Anders Jensen, and Lucie Gadenne](https://www.aeaweb.org/articles?id=10.1257/jep.38.1.55&ArticleSearch%5Bwithin%5D%5Barticletitle%5D=1&ArticleSearch%5Bwithin%5D%5Barticleabstract%5D=1&ArticleSearch%5Bwithin%5D%5Bauthorlast%5D=1&ArticleSearch%5Bq%5D=&JelClass%5Bvalue%5D=0&journal=3&from=j). The dataset was retrieved from the original paper's replication package at [openICPSR](https://www.openicpsr.org/openicpsr/project/194851/version/V1/view). Further findings from the original paper, including the evolution of tax policy and its impact on income inequality and economic development, are all extended in this analysis. 
 
 
 ## File Structure
