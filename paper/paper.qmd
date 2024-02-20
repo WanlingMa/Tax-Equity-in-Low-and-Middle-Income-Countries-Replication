@@ -2,7 +2,7 @@
 title: "The Impact of Tax Policy Evolution on Economic Development and Income Inequality"
 author: 
   - Amie Liu, Wanling Ma
-thanks: "Code and data are available at: https://github.com/WanlingMa/Tax-Equity-in-Low-and-Middle-Income-Countries-Replication"
+thanks: "Code and data are available at: https://github.com/WanlingMa/Tax-Equity-in-Low-and-Middle-Income-Countries-Replication; This reproduction was performed after a replication on the Social Science Reproduction platform: https://www.socialsciencereproduction.org/reproductions/0527a4db-9300-4160-ae8c-656c449f6d24/index"
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -30,9 +30,15 @@ library(labelled)
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+In today's globalized economy, taxation's role in economic development is central to both academic inquiry and policymaking. Tax policies shape the distribution of wealth and opportunities within countries. It functions as a regulatory instrument when the government's objective is to encourage or restrain economic activity through the reduction or escalation of income tax and other taxes, as well as contributions that influence people’s disposable income and consumption [@taxpolicy]. As countries strive to achieve sustainable growth and equitably distribute resources, it is critical to understand how tax policy evolves and its impact on economic development and income inequality. 
 
-The remainder of this paper is structured as follows. @sec-data....
+“Tax Equity in Low- and Middle-Income Countries” by Pierre Bachas, Anders Jensen, and Lucie Gadenne investigates tax equity and its implications in low- and middle-income countries. They find a shift from indirect to personal income taxes as countries move towards higher levels of economic development [@article]. In low-income countries, a significantly higher percentage of revenue comes from indirect taxes (65%) compared to high-income countries (48%) [@article]. Moreover, the prevalence of the informal sector significantly affects the progressivity of indirect taxes like Value-Added Tax (VAT), contrary to common perception [@article]. The estimand focuses on these findings and explores the relationship between the transition from indirect to direct taxation and economic growth in low- and middle-income countries. We seek to quantify how changes in tax policy influence key economic indicators such as GDP growth and employment. By examining this relationship, our paper provides valuable insights into the impact of tax policy evolution on overall economic development.
+
+This paper reproduces, replicates, and expands on these findings. It examines the implications of tax policy evolution on economic development and income inequality, which raises the research question: "How does the transition from indirect to direct taxation, alongside the dynamics of the informal sector, influence tax equity and economic development in low- and middle-income countries, and what are the implications for designing effective and equitable tax policies?" 
+
+Our analysis reveals significant findings about the dynamics of tax policy in low- and middle-income countries and its relationship to economic development and equity. We observe a clear trend showing a transition from indirect to direct taxation as economies advance and reflecting a shift towards tax systems that are more progressive. This shift has the potential to reduce income inequality by placing a larger tax burden on higher-income households. Furthermore, contrary to conventional views, indirect taxes can exhibit progressive features in economies with substantial informal sectors. This challenges traditional tax policy narratives, emphasizing the need for specific tax policy designs. However, difficulties are present in effectively taxing high-income households, particularly in low- and middle-income countries, where issues of tax evasion and enforcement challenges are major barriers to the effectiveness of direct taxation on wealthy households. These difficulties are critical for understanding the limitations of current tax systems in achieving equity. Therefore, our findings underscore the complexity of tax policy evolution and its implications for income inequality and economic development in low- and middle-income countries.
+
+This paper is structured into three main sections: Data, Results, and Discussion. @sec-data Data delves into sources and methodology. It explores the various sources used for data collection, cleaning, and analyzing processes, drawing from the dataset originally published by the American Economic Association [@aea] and accessed through the openICPSR Portal [@openicpsr]. In @sec-results Results, we replicate and expand findings from the data of “Tax Equity in Low- and Middle-Income Countries” [@article], focusing on data visualizations and analyses. @sec-discussion Discussion provides a comprehensive analysis of the research findings, highlights the importance of ethical considerations in tax policy analysis, and identifies areas for future research.
 
 
 # Data {#sec-data}
@@ -47,7 +53,7 @@ In this paper, we discuss how economic development influences tax structures, wi
 
 This paper used the R programming language [@citeR] and the 'tidyverse' [@citeTidyverse] packages for replication, reproduction, data cleaning, and analysis. Within the 'tidyverse' package [@citeTidyverse], we used 'readr' [@citeReadr], 'dplyr' [@citeDplyr], 'tidyr' [@citeTidyr], and 'ggplot2' [@citeGgplot2] for reading CSV files, manipulating data, tidying data, and creating graphs.
 
-Data collection methods exhibit significant diversity among open sources. We conducted a data-cleaning procedure for reproduction, focusing on variable selection, simplifying variable names, and removing missing values. The variables selected from the original paper were chosen based on their relevance to our research question, relating to (TODO). 
+Data collection methods exhibit significant diversity among open sources. We conducted a data-cleaning procedure for reproduction, focusing on variable selection, simplifying variable names, and removing missing values. The variables selected from the original paper were chosen based on their relevance to our research question, relating to how does the transition from indirect to direct taxation, alongside the dynamics of the informal sector, influence tax equity and economic development in low- and middle-income countries, and what are the implications for designing effective and equitable tax policies?
 
 This paper analyzes the datasets listed below, which we have organized into three categories: Economic Development and Growth, Labor Market and Employment, and Taxation and Income Distribution.
 
