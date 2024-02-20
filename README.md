@@ -1,4 +1,4 @@
-# Tax Equity in Low- and Middle- Income Countries Replication
+# The Impact of Tax Policy Evolution on Economic Development and Income Inequality
 
 ## Overview
 
@@ -10,7 +10,7 @@
 The repo is structured as:
 
 -   `data/raw_data` contains the raw data as obtained from the replication package of the original paper.
--   `other` contains relevant literature, details about LLM chat interactions, and sketches.
+-   `other` contains details about LLM chat interactions, and sketches.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
 -   `scripts` contains the R scripts used to simulate, download, process and produce the figures.
 

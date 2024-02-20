@@ -2,10 +2,10 @@
 title: "The Impact of Tax Policy Evolution on Economic Development and Income Inequality"
 author: 
   - Amie Liu, Wanling Ma
-thanks: "Code and data are available at: https://github.com/WanlingMa/Tax-Equity-in-Low-and-Middle-Income-Countries-Replication; This reproduction was performed after a replication on the Social Science Reproduction platform: https://www.socialsciencereproduction.org/reproductions/0527a4db-9300-4160-ae8c-656c449f6d24/index"
+thanks: "Code and data are available at: https://github.com/WanlingMa/The-Impact-of-Tax-Policy-Evolution-on-Economic-Development-and-Income-Inequality; This reproduction was performed after a replication on the Social Science Reproduction platform: https://www.socialsciencereproduction.org/reproductions/0527a4db-9300-4160-ae8c-656c449f6d24/index"
 date: today
 date-format: long
-abstract: "The role of taxation in economic development is crucial, influencing wealth distribution and shaping economic activity regulation. This paper uses R to replicate and analyze data to understand the evolution of tax policy and its impact on income inequality and economic development. Our findings reveal a significant shift towards direct taxation as economies advance. Further research is necessary to address policy implementation challenges and refine optimal tax policy frameworks supporting equitable economic development."
+abstract: "The role of taxation in economic development is crucial, influencing wealth distribution and shaping economic activity regulation. This paper uses R programming language to replicate and analyze data to understand the evolution of tax policy and its impact on income inequality and economic development. Our findings reveal a significant shift towards direct taxation as economies advance. Further research is necessary to address policy implementation challenges and refine optimal tax policy frameworks supporting equitable economic development."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -317,6 +317,7 @@ Conversely, the second graph of @fig-taxrevenue-gdp-diff-source presents a sligh
 #| warning: false
 #| message: false
 
+# Generate Figure 4 and 5
 source("../scripts/100-replications-figure2.R")
 ```
 
@@ -528,7 +529,7 @@ ggplot(data, aes(x = gdp_pc, y = top_rate)) +
 
 @fig-statutory-tax-rate-vs-gdp-level shows the top statutory tax rate of the personal income tax across 129 countries, utilizing data from 2023 collected by the authors [@article] and particularly distinguishing between high-income countries and low- and middle-income countries. On average, the top statutory tax rate in high-income countries is marginally higher, standing at 35%, compared to 29% in low- and middle-income countries (see @fig-statutory-tax-rate-vs-gdp-level). Despite the slight variation in top statutory tax rates,  @fig-statutory-tax-rate-vs-gdp-level does not reflect a proportional relationship between GDP per capita and the top statutory tax rate. This underscores the nuanced dynamics of personal income taxation across different income levels and economic contexts.
 
-@fig-workforce-share-vs-gdp-level shows the share of the active workforce subject to personal income tax across varying levels of economic development, as indicated by GDP per capita. It encompasses 92 countries and underscores the evolution of personal income taxation policies from lower-income to high-income countries [@article]. It reveals a distinct trend: as economic development progresses, there is a gradual increase in the share of the workforce subject to personal income tax obligations (see @fig-workforce-share-vs-gdp-level). In lower-income countries, the coverage of the personal income tax is minimal, with the lowest point hovering slightly above 0 share of the workforce and slightly over 500 GDP per capita. Conversely, high-income countries demonstrate a significantly higher share of the workforce population legally liable to pay personal income taxes, with the highest point approaching nearly 100 share of the workforce and exceeding 50,000 GDP per capita (see @fig-workforce-share-vs-gdp-level). These key findings highlight the differences in the implementation and coverage of personal income taxation policies between high-income and low- and middle-income countries, showing the evolution of tax systems across varying levels of economic development.
+@fig-workforce-share-vs-gdp-level shows the share of the active workforce subject to personal income tax across varying levels of economic development, as indicated by GDP per capita. It encompasses 92 countries and underscores the evolution of personal income taxation policies from lower-income to high-income countries [@article]. It reveals a distinct trend: as economic development progresses, there is a gradual increase in the share of the workforce subject to personal income tax obligations (see @fig-workforce-share-vs-gdp-level). In lower-income countries, the coverage of the personal income tax is minimal, with the lowest point hovering slightly above 0 share of the workforce and slightly over \$500 GDP per capita. Conversely, high-income countries demonstrate a significantly higher share of the workforce population legally liable to pay personal income taxes, with the highest point approaching nearly 100 share of the workforce and exceeding \$50,000 GDP per capita (see @fig-workforce-share-vs-gdp-level). These key findings highlight the differences in the implementation and coverage of personal income taxation policies between high-income and low- and middle-income countries, showing the evolution of tax systems across varying levels of economic development.
 
 ```{r}
 #| label: fig-workforce-share-vs-gdp-level
@@ -647,7 +648,7 @@ It is worthy to note that our work also uncovers several issues that warrant fur
 
 3. Economic Diversification and Tax Policy: Our findings also prompt questions about how economic diversification affects tax policy choices. As countries develop, the shift in their economic base—from agriculture to industry and services—could have profound implications for tax policy design and effectiveness.
 
-In conclusion, while our paper builds upon and extends the findings of Bachas, Jensen, and Gadenne (2024), it also highlights the complexity of tax policy in the context of economic development. The insights provided through our analysis of tax structures, the role of the informal sector, and the challenges of taxing high-income individuals offer valuable contributions to the ongoing discussion about how to design equitable and effective tax systems in low- and middle-income countries. Further research is needed to address the emergent issues and to refine our understanding of the optimal tax policy frameworks that can support equitable economic development.
+In conclusion, while our paper builds upon and extends the findings of Bachas, Jensen, and Gadenne @article, it also highlights the complexity of tax policy in the context of economic development. The insights provided through our analysis of tax structures, the role of the informal sector, and the challenges of taxing high-income individuals offer valuable contributions to the ongoing discussion about how to design equitable and effective tax systems in low- and middle-income countries. Further research is needed to address the emergent issues and to refine our understanding of the optimal tax policy frameworks that can support equitable economic development.
 
 
 
