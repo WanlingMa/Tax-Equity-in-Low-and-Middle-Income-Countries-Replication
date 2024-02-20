@@ -1,26 +1,16 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Downloads and saves the data from AEA
+# Author: Amie Liu, Wanling Ma
+# Date: 19 February 2024
+# Contact: wanling.ma@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
 
 
 #### Workspace setup ####
-library(opendatatoronto)
-library(tidyverse)
-# [...UPDATE THIS...]
-
-#### Download data ####
-# [...ADD CODE HERE TO DOWNLOAD...]
-
-
-
-#### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_data, "inputs/data/raw_data.csv") 
+# You can download the paper from https://www.aeaweb.org/articles?id=10.1257/jep.38.1.55
+# Click the "Download Full Text PDF (Complimentary)" to download the paper.
+#
+# You can download the replication package from https://www.openicpsr.org/openicpsr/project/194851/version/V1/view.
+# Click the "Download This Project" and follow the instruction.
 
          
