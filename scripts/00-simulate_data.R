@@ -30,6 +30,6 @@ data_frame <- data.frame(pct_tax_noSSC, gdp_pc, self_employed_share, employment_
 # Print the first few rows of the dataframe
 head(data_frame)
 
-write_csv(data_frame, "data/simulation.csv")
+write_csv(data_frame, "data/simulation/simulation.csv")
 
 

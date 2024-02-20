@@ -6,13 +6,11 @@
 # License: MIT
 
 
-
 #### Workspace setup ####
 library(tidyverse)
-# [...UPDATE THIS...]
 
 #### Test data ####
-df <- read.csv("data/simulation.csv")
+df <- read.csv("data/simulation/simulation.csv")
 # Test for missing values
 if(any(is.na(df))) {
   stop("There are missing values in the dataframe.")
