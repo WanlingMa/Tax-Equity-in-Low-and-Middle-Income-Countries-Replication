@@ -4,7 +4,6 @@
 # Date: 13 February 2024
 # Contact: wanling.ma@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
 
 
 #### Workspace setup ####
@@ -16,7 +15,7 @@ library(labelled)
 
 #### Pre-process data ####
 
-# Define the usual suspects (assuming this is a vector of variable names)
+# Define the usual suspects
 usualsuspects <- c("source", "class_pspr", "oecd", "ctry_year", "ctry_ceq", "year", "ctry", "ctry_code", "class_geo", "class_inc", "class_inc_code", "class_pspr", "class_pspr_code", "class_lend", "class_weo", "decile", "decnum", "ctry_code", "pen_scenario")
 
 # Load the data
@@ -59,12 +58,10 @@ data_collapsed <- data %>%
             count = n()) %>%
   ungroup()
 
-# Labeling variables (R doesn't use variable labels in the same way as Stata, but for documentation)
-# You can store metadata or use attributes in R for a similar purpose
+# Labeling variables
 attr(data_collapsed$varofint, "label") <- paste("median", "dirtax", sep = "-")
 
-# Reordering variables (dplyr automatically orders variables based on the group_by and summarise steps)
-# If you need to explicitly change the order, you can use select()
+# Reordering variables
 data_collapsed <- data_collapsed %>%
   select(class_inc, !!sym("class_inc"), decnum, varofint, count)
 
@@ -94,8 +91,6 @@ g_hic <- ggplot(data %>% filter(class_inc == "hic"), aes(x = decnum, y = varofin
   theme_minimal() +
   theme(plot.background = element_blank(),
         panel.background = element_blank())
-
-# Repeat for other income classes as needed, adjusting the filter condition and colors
 
 # Combined scatter plot with annotations
 g_combined <- ggplot(data, aes(x = decnum, y = varofint, color = class_inc)) +
@@ -180,11 +175,6 @@ complete_sample_data$income_groups <- factor(complete_sample_data$income_groups,
                                              levels = c(1, 2, 3, 4),
                                              labels = c("Low income", "Lower middle income", "Upper middle income", "High income"))
 
-# Now, you can proceed with the rest of the analysis as planned.
-
-# For example, to tabulate income_groups:
-table(complete_sample_data$income_groups)
-
 # Summarize top_rate by income_groups
 complete_sample_data %>%
   group_by(income_groups) %>%
@@ -194,7 +184,6 @@ complete_sample_data %>%
 mean(complete_sample_data$top_rate[complete_sample_data$income_groups == "High income"], na.rm = TRUE) # High income
 mean(complete_sample_data$top_rate[complete_sample_data$income_groups != "High income"], na.rm = TRUE) # Developing countries
 
-# Assuming 'data' is your data frame containing 'top_rate', 'gdp_pc', and 'lg_gdppc'
 data <- complete_sample_data
 # Create a new variable for color coding based on GDP per capita thresholds
 data$color_group <- with(data, ifelse(gdp_pc >= 13000, "High GDP",

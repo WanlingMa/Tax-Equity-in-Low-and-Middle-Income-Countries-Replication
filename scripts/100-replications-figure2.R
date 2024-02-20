@@ -4,7 +4,6 @@
 # Date: 13 February 2024
 # Contact: wanling.ma@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
 
 
 #### Workspace setup ####
@@ -67,9 +66,6 @@ merged_data <- self_employment_data %>%
   left_join(read_dta(tempfile_pop), by = "country") %>%
   filter(!is.na(self_employed_share))
 
-# Optionally, perform additional filtering based on `self_employed_share` if needed
-# This is akin to the comments in the Stata code about aligning samples
-
 # Merge with Tax sample to have comparable countries
 tax_sample <- read_dta("../data/proc/tax_sample.dta")
 
@@ -106,10 +102,6 @@ plot1 <- ggplot(data = final_sample, aes(x = gdp_pc_log, y = self_employed_share
 
 #### Draw Figure 2.2 ####
 
-# Load necessary libraries
-
-
-# Obtain GDP_pc for the country
 # Read Excel file
 gdp_data <- read_excel("../data/raw_data/Country_information.xlsx")
 
@@ -129,7 +121,7 @@ write_dta(gdp_data, "../data/proc/gdp_data.dta")
 country_frame <- read_dta("../data/raw_data/country_frame.dta") %>%
   rename(country_code = iso2)
 
-# Save the temporary data as a Stata file (if needed for later use)
+# Save the temporary data as a Stata file
 write_dta(country_frame, "../data/proc/country_frame.dta")
 
 # Load Data of regression Output
@@ -149,7 +141,7 @@ data <- select(final_data, -c(se, r2_adj))
 data_wide <- pivot_wider(data, names_from = iteration, values_from = b, 
                          names_prefix = "b", id_cols = c(country_code, year))
 
-# Merge with gdp_data (assuming gdp_data is already loaded and prepared)
+# Merge with gdp_data
 merged_data <- inner_join(data_wide, gdp_data, by = c("country_code", "year"))
 
 
