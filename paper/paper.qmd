@@ -5,7 +5,7 @@ author:
 thanks: "Code and data are available at: https://github.com/WanlingMa/Tax-Equity-in-Low-and-Middle-Income-Countries-Replication; This reproduction was performed after a replication on the Social Science Reproduction platform: https://www.socialsciencereproduction.org/reproductions/0527a4db-9300-4160-ae8c-656c449f6d24/index"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "The role of taxation in economic development is crucial, influencing wealth distribution and shaping economic activity regulation. This paper uses R to replicate and analyze data to understand the evolution of tax policy and its impact on income inequality and economic development. Our findings reveal a significant shift towards direct taxation as economies advance. Further research is necessary to address policy implementation challenges and refine optimal tax policy frameworks supporting equitable economic development."
 format: pdf
 number-sections: true
 bibliography: references.bib
