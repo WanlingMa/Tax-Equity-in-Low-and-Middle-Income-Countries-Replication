@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Replicated Figure 3 from The Equity of Tax Systems in Low- and MiddleIncome Countries paper
+# Purpose: Replicated Figure 2 from The Equity of Tax Systems in Low- and MiddleIncome Countries paper
 # Author: Amie Liu, Wanling Ma
 # Date: 13 February 2024
 # Contact: wanling.ma@mail.utoronto.ca

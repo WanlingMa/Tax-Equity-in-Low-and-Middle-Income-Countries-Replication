@@ -18,11 +18,11 @@ n <- 1000 # Define the number of observations
 
 pct_tax_noSSC <- runif(n, 0, 100) # Uniform distribution for percentage values
 gdp_pc <- rnorm(n, mean = 50000, sd = 15000) # Assume a mean GDP per capita with some standard deviation
-self_employed_share <- runif(n, 0, 100) # Uniform distribution for percentage values
-employment_rate <- runif(n, 0, 100) # Uniform distribution for percentage values
+self_employed_share <- runif(n, 0, 100) # Uniform distribution for self-employment rate
+employment_rate <- runif(n, 0, 100) # Uniform distribution for employment rate
 varofint <- runif(n, 0, 50) # Assuming average tax rate varies
 income_decile <- sample(1:10, n, replace = TRUE) # Assuming income deciles from 1 to 10
-share_of_tax_revenue <- runif(n, 0, 100) # Uniform distribution for percentage values
+share_of_tax_revenue <- runif(n, 0, 100) # Uniform distribution for share of tax revenue
 
 # Combine into a dataframe
 data_frame <- data.frame(pct_tax_noSSC, gdp_pc, self_employed_share, employment_rate, varofint, income_decile, share_of_tax_revenue)

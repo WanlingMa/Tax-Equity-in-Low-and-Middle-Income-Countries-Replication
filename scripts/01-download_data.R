@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from AEA
+# Purpose: Downloads and saves the data for The Equity of Tax Systems in Low- and MiddleIncome Countries paper from AEA
 # Author: Amie Liu, Wanling Ma
 # Date: 19 February 2024
 # Contact: wanling.ma@mail.utoronto.ca
